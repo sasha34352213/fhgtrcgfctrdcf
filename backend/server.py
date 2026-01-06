@@ -152,6 +152,70 @@ def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return True
 
+# Image Upload
+@api_router.post("/upload")
+async def upload_image(file: UploadFile = File(...)):
+    """Upload an image and return its URL"""
+    try:
+        # Validate file type
+        allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Invalid file type. Allowed: JPEG, PNG, WebP, GIF")
+        
+        # Generate unique filename
+        ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+        filename = f"{uuid.uuid4()}.{ext}"
+        filepath = UPLOAD_DIR / filename
+        
+        # Read file content
+        content = await file.read()
+        
+        # Optimize image
+        try:
+            img = PILImage.open(BytesIO(content))
+            
+            # Convert to RGB if necessary (for PNG with transparency)
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            
+            # Resize if too large (max 1200px width)
+            max_width = 1200
+            if img.width > max_width:
+                ratio = max_width / img.width
+                new_height = int(img.height * ratio)
+                img = img.resize((max_width, new_height), PILImage.Resampling.LANCZOS)
+            
+            # Save optimized image
+            output = BytesIO()
+            img.save(output, format='JPEG', quality=85, optimize=True)
+            content = output.getvalue()
+            filename = f"{uuid.uuid4()}.jpg"
+            filepath = UPLOAD_DIR / filename
+        except Exception as e:
+            logging.warning(f"Image optimization failed: {e}")
+        
+        # Save file
+        async with aiofiles.open(filepath, 'wb') as f:
+            await f.write(content)
+        
+        # Return the URL
+        return {"url": f"/api/uploads/{filename}", "filename": filename}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Upload error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/upload/{filename}")
+async def delete_image(filename: str):
+    """Delete an uploaded image"""
+    filepath = UPLOAD_DIR / filename
+    if filepath.exists():
+        filepath.unlink()
+        return {"success": True}
+    raise HTTPException(status_code=404, detail="File not found")
+
 # Admin Auth
 @api_router.post("/admin/login")
 async def admin_login(login: AdminLogin):
