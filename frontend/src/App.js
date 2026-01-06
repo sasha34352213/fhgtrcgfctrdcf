@@ -1,53 +1,65 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
+import { LanguageProvider } from "./context/LanguageContext";
+import { CartProvider } from "./context/CartContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Catalog from "./pages/Catalog";
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
+import Reviews from "./pages/Reviews";
+import Admin from "./pages/Admin";
 import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
+function App() {
+  // Seed data on first load
   useEffect(() => {
-    helloWorldApi();
+    const seedData = async () => {
+      try {
+        await axios.post(`${API}/seed`);
+      } catch (error) {
+        // Ignore errors - data may already exist
+      }
+    };
+    seedData();
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <LanguageProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <div className="App min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/admin" element={<Admin />} />
+              </Routes>
+            </main>
+            <Footer />
+            <Toaster 
+              position="bottom-right" 
+              toastOptions={{
+                style: {
+                  background: '#0a0a0a',
+                  color: '#fff',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                },
+              }}
+            />
+          </div>
+        </BrowserRouter>
+      </CartProvider>
+    </LanguageProvider>
   );
 }
 
