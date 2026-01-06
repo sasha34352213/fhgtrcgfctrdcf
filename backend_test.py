@@ -274,6 +274,48 @@ class HooHlyaShopAPITester:
         except Exception as e:
             self.log_test("Admin Login", False, str(e))
 
+    def test_image_upload(self):
+        """Test image upload functionality"""
+        try:
+            # Create a simple test image (1x1 pixel PNG)
+            import base64
+            from io import BytesIO
+            
+            # Minimal PNG data (1x1 transparent pixel)
+            png_data = base64.b64decode(
+                'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAI9jU8'
+                'IQAAAAABJRU5ErkJggg=='
+            )
+            
+            # Test image upload
+            files = {'file': ('test.png', BytesIO(png_data), 'image/png')}
+            response = requests.post(f"{self.base_url}/upload", files=files)
+            success = response.status_code == 200
+            upload_result = response.json() if success else {}
+            self.log_test("Image Upload", success, f"Status: {response.status_code}")
+            
+            if success and upload_result.get('url'):
+                # Test accessing uploaded image
+                image_url = f"{self.base_url.replace('/api', '')}{upload_result['url']}"
+                img_response = requests.get(image_url)
+                img_success = img_response.status_code == 200
+                self.log_test("Access Uploaded Image", img_success, f"Status: {img_response.status_code}")
+                
+                # Test delete uploaded image
+                if upload_result.get('filename'):
+                    delete_response = requests.delete(f"{self.base_url}/upload/{upload_result['filename']}")
+                    delete_success = delete_response.status_code == 200
+                    self.log_test("Delete Uploaded Image", delete_success, f"Status: {delete_response.status_code}")
+            
+            # Test invalid file type
+            invalid_files = {'file': ('test.txt', BytesIO(b'test content'), 'text/plain')}
+            response = requests.post(f"{self.base_url}/upload", files=invalid_files)
+            success = response.status_code == 400
+            self.log_test("Upload Invalid File Type", success, f"Status: {response.status_code}")
+            
+        except Exception as e:
+            self.log_test("Image Upload", False, str(e))
+
     def test_orders_and_pdf(self):
         """Test order creation and PDF generation"""
         try:
