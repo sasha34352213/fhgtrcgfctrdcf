@@ -371,6 +371,7 @@ class HooHlyaShopAPITester:
         self.test_products_endpoints()
         self.test_reviews_endpoints()
         self.test_admin_login()
+        self.test_image_upload()
         self.test_orders_and_pdf()
         
         # Print summary
