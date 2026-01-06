@@ -27,6 +27,10 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Create uploads directory
+UPLOAD_DIR = ROOT_DIR / 'uploads'
+UPLOAD_DIR.mkdir(exist_ok=True)
+
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
