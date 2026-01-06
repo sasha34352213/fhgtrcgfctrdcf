@@ -108,46 +108,46 @@ const Catalog = () => {
   const hasFilters = selectedBrand !== 'all' || selectedCategory !== 'all' || searchQuery;
 
   return (
-    <div className="min-h-screen pt-20 md:pt-24" data-testid="catalog-page">
+    <div className="min-h-screen pt-20 md:pt-24 bg-[#141414]" data-testid="catalog-page">
       {/* Header */}
-      <div className="py-12 md:py-16 border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="py-12 md:py-16">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-5xl md:text-7xl lg:text-8xl"
+            className="font-heading text-4xl md:text-6xl text-white text-center"
           >
-            {t('catalog.title')}
+            {language === 'de' ? 'KATALOG' : 'CATALOG'}
           </motion.h1>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="py-6 border-b border-white/10 sticky top-16 md:top-20 z-40 glass" data-testid="filters">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+      <div className="py-6 border-y border-white/10 sticky top-16 md:top-20 z-40 bg-[#141414]" data-testid="filters">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-center">
             {/* Search */}
             <div className="relative w-full md:w-64">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
               <Input
                 type="text"
-                placeholder={t('catalog.search')}
+                placeholder={language === 'de' ? 'Suchen...' : 'Search...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-[#1a1a1a] border-transparent focus:border-[#CCFF00] h-10 font-mono text-sm"
+                className="pl-10 bg-[#1a1a1a] border-white/10 focus:border-white/30 h-10 text-sm text-white placeholder:text-white/30"
                 data-testid="search-input"
               />
             </div>
 
             {/* Brand Filter */}
             <Select value={selectedBrand} onValueChange={handleBrandChange}>
-              <SelectTrigger className="w-full md:w-48 bg-[#1a1a1a] border-transparent h-10 font-mono text-sm" data-testid="brand-filter">
-                <SelectValue placeholder={t('catalog.allBrands')} />
+              <SelectTrigger className="w-full md:w-48 bg-[#1a1a1a] border-white/10 h-10 text-sm text-white" data-testid="brand-filter">
+                <SelectValue placeholder={language === 'de' ? 'Alle Marken' : 'All Brands'} />
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border-white/10">
-                <SelectItem value="all" className="font-mono text-sm">{t('catalog.allBrands')}</SelectItem>
+                <SelectItem value="all" className="text-sm text-white">{language === 'de' ? 'Alle Marken' : 'All Brands'}</SelectItem>
                 {brands.map((brand) => (
-                  <SelectItem key={brand.id} value={brand.id} className="font-mono text-sm">
+                  <SelectItem key={brand.id} value={brand.id} className="text-sm text-white">
                     {brand.name}
                   </SelectItem>
                 ))}
@@ -156,13 +156,13 @@ const Catalog = () => {
 
             {/* Category Filter */}
             <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-              <SelectTrigger className="w-full md:w-48 bg-[#1a1a1a] border-transparent h-10 font-mono text-sm" data-testid="category-filter">
-                <SelectValue placeholder={t('catalog.allCategories')} />
+              <SelectTrigger className="w-full md:w-48 bg-[#1a1a1a] border-white/10 h-10 text-sm text-white" data-testid="category-filter">
+                <SelectValue placeholder={language === 'de' ? 'Alle Kategorien' : 'All Categories'} />
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border-white/10">
-                <SelectItem value="all" className="font-mono text-sm">{t('catalog.allCategories')}</SelectItem>
+                <SelectItem value="all" className="text-sm text-white">{language === 'de' ? 'Alle Kategorien' : 'All Categories'}</SelectItem>
                 {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id} className="font-mono text-sm">
+                  <SelectItem key={cat.id} value={cat.id} className="text-sm text-white">
                     {getCategoryName(cat)}
                   </SelectItem>
                 ))}
@@ -173,7 +173,7 @@ const Catalog = () => {
             {hasFilters && (
               <button
                 onClick={clearFilters}
-                className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-white/50 hover:text-[#CCFF00] transition-colors duration-300"
+                className="flex items-center gap-2 text-xs uppercase tracking-wider text-white/50 hover:text-white transition-colors duration-300"
                 data-testid="clear-filters"
               >
                 <X size={14} />
@@ -185,26 +185,25 @@ const Catalog = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="py-8 md:py-12">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="py-12 md:py-16">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="aspect-[3/4] bg-[#1a1a1a] animate-pulse" />
+                <div key={i} className="aspect-square bg-[#1a1a1a] animate-pulse" />
               ))}
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-24">
-              <p className="text-white/50 font-mono">{t('catalog.noProducts')}</p>
+              <p className="text-white/50">{language === 'de' ? 'Keine Produkte gefunden' : 'No products found'}</p>
             </div>
           ) : (
-            <div className="tetris-grid" data-testid="products-grid">
-              {products.map((product, index) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" data-testid="products-grid">
+              {products.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   brand={getBrandForProduct(product)}
-                  isLarge={index === 0}
                 />
               ))}
             </div>

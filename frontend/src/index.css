@@ -1,30 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 2%;
-  --foreground: 0 0% 93%;
-  --card: 0 0% 5%;
-  --card-foreground: 0 0% 93%;
-  --popover: 0 0% 5%;
-  --popover-foreground: 0 0% 93%;
-  --primary: 75 100% 50%;
+  --background: 0 0% 8%;
+  --foreground: 0 0% 95%;
+  --card: 0 0% 12%;
+  --card-foreground: 0 0% 95%;
+  --popover: 0 0% 12%;
+  --popover-foreground: 0 0% 95%;
+  --primary: 0 0% 100%;
   --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 10%;
+  --secondary: 0 0% 18%;
   --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 75 100% 50%;
-  --accent-foreground: 0 0% 0%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 0 0% 20%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 70% 50%;
   --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 15%;
-  --input: 0 0% 10%;
-  --ring: 75 100% 50%;
-  --radius: 0px;
+  --border: 0 0% 20%;
+  --input: 0 0% 15%;
+  --ring: 0 0% 100%;
+  --radius: 4px;
 }
 
 * {
@@ -38,219 +38,168 @@ html {
 }
 
 body {
-  font-family: 'Manrope', sans-serif;
-  background-color: #050505;
-  color: #EDEDED;
+  font-family: 'Inter', sans-serif;
+  background-color: #141414;
+  color: #f5f5f5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Noise Texture Overlay */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 9999;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
-  font-family: 'Anton', sans-serif;
-  letter-spacing: -0.02em;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-}
-
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: #141414;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
-  border-radius: 0;
+  background: #333;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #CCFF00;
+  background: #555;
 }
 
 /* Selection */
 ::selection {
-  background: #CCFF00;
-  color: #000000;
+  background: #fff;
+  color: #000;
 }
 
-/* Button Animations */
+/* Buttons */
 .btn-primary {
-  background: #CCFF00;
-  color: #000000;
-  font-weight: 700;
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  padding: 1rem 2rem;
-  border: none;
+  padding: 0.875rem 2rem;
+  border: 1px solid #333;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
 }
 
 .btn-primary:hover {
-  background: #FFFFFF;
-  transform: translateY(-2px);
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .btn-secondary {
   background: transparent;
-  color: #FFFFFF;
-  font-weight: 700;
+  color: #fff;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  padding: 1rem 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.875rem 2rem;
+  border: 1px solid #333;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 0.75rem;
 }
 
 .btn-secondary:hover {
-  background: #FFFFFF;
-  color: #000000;
-  border-color: #FFFFFF;
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
-/* Product Card Image Effect */
+/* Product Card */
+.product-card {
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
 .product-image {
-  filter: grayscale(30%);
-  transition: filter 0.5s ease, transform 0.5s ease;
+  filter: grayscale(100%);
+  transition: filter 0.5s ease;
 }
 
 .product-card:hover .product-image {
   filter: grayscale(0%);
-  transform: scale(1.05);
 }
 
 /* Glass Effect */
 .glass {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Link Underline Animation */
-.link-underline {
-  position: relative;
-}
-
-.link-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
+/* Section Divider */
+.section-divider {
   height: 1px;
-  background: #CCFF00;
-  transition: width 0.3s ease;
-}
-
-.link-underline:hover::after {
-  width: 100%;
-}
-
-/* Tetris Grid */
-.tetris-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
-}
-
-@media (min-width: 768px) {
-  .tetris-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-}
-
-.tetris-grid > *:first-child {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-/* Page Transitions */
-.page-enter {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-/* Stagger Animation */
-@keyframes staggerFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.stagger-item {
-  animation: staggerFadeIn 0.6s ease forwards;
-  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
 }
 
 /* Contact Buttons */
 .contact-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: transparent;
+  border: 1px solid #333;
+  background: #1a1a1a;
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   transition: all 0.3s ease;
   text-decoration: none;
+  border-radius: 2px;
 }
 
 .contact-btn:hover {
-  border-color: #CCFF00;
-  color: #CCFF00;
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
-.contact-btn.whatsapp:hover {
-  border-color: #25D366;
-  color: #25D366;
+/* Brand Logo */
+.brand-logo {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
 }
 
-.contact-btn.telegram:hover {
-  border-color: #0088CC;
-  color: #0088CC;
+.brand-logo:hover {
+  opacity: 1;
 }
 
-.contact-btn.instagram:hover {
-  border-color: #E4405F;
-  color: #E4405F;
+/* Step Card */
+.step-card {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.step-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+/* Review Card */
+.review-card {
+  background: #1a1a1a;
+  border: 1px solid #262626;
+  padding: 1.5rem;
 }
 
 @layer base {

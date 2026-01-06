@@ -7,7 +7,7 @@ import axios from 'axios';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const Reviews = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,40 +30,40 @@ const Reviews = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 md:pt-24" data-testid="reviews-page">
+    <div className="min-h-screen pt-20 md:pt-24 bg-[#141414]" data-testid="reviews-page">
       {/* Header */}
-      <div className="py-12 md:py-16 border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="py-12 md:py-16">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-5xl md:text-7xl lg:text-8xl"
+            className="font-heading text-4xl md:text-6xl text-white text-center"
           >
-            {t('reviews.title')}
+            {language === 'de' ? 'KUNDENBEWERTUNGEN' : 'CUSTOMER REVIEWS'}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-white/50 mt-4 font-mono text-sm uppercase tracking-widest"
+            className="text-white/50 mt-4 text-sm uppercase tracking-wider text-center"
           >
-            {t('reviews.subtitle')}
+            {language === 'de' ? 'Was unsere Kunden sagen' : 'What our customers say'}
           </motion.p>
         </div>
       </div>
 
       {/* Reviews Grid */}
-      <div className="py-12 md:py-16">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="py-8 md:py-12">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="bg-[#0a0a0a] p-8 animate-pulse h-64" />
+                <div key={i} className="bg-[#1a1a1a] p-6 animate-pulse h-48" />
               ))}
             </div>
           ) : reviews.length === 0 ? (
             <div className="text-center py-24">
-              <p className="text-white/50 font-mono">No reviews yet</p>
+              <p className="text-white/50">{language === 'de' ? 'Noch keine Bewertungen' : 'No reviews yet'}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="reviews-grid">
@@ -73,7 +73,7 @@ const Reviews = () => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-[#0a0a0a] border border-white/5 p-6 md:p-8 hover:border-[#CCFF00]/30 transition-colors duration-500"
+                  className="bg-[#1a1a1a] border border-white/10 p-6"
                   data-testid={`review-${review.id}`}
                 >
                   {/* Rating */}
@@ -81,15 +81,15 @@ const Reviews = () => {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        size={16}
-                        className={i < review.rating ? 'fill-[#CCFF00] text-[#CCFF00]' : 'text-white/20'}
+                        size={14}
+                        className={i < review.rating ? 'fill-white text-white' : 'text-white/20'}
                       />
                     ))}
                   </div>
 
                   {/* Image */}
                   {review.image_url && (
-                    <div className="aspect-video mb-4 overflow-hidden bg-[#1a1a1a]">
+                    <div className="aspect-video mb-4 overflow-hidden bg-[#262626]">
                       <img
                         src={review.image_url}
                         alt=""
@@ -99,10 +99,10 @@ const Reviews = () => {
                   )}
 
                   {/* Text */}
-                  <p className="text-white/70 leading-relaxed mb-4">{getText(review)}</p>
+                  <p className="text-white/70 leading-relaxed mb-4 italic">"{getText(review)}"</p>
 
                   {/* Author */}
-                  <p className="font-mono text-xs uppercase tracking-widest text-[#CCFF00]">
+                  <p className="text-white/50 text-sm">
                     — {review.author}
                   </p>
                 </motion.div>

@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
-import { Minus, Plus, Trash2, ShoppingBag, FileText, Download } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, FileText, Download, MessageCircle, Send, Instagram } from 'lucide-react';
 import axios from 'axios';
-import ContactButtons from '../components/ContactButtons';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -42,7 +41,7 @@ const Cart = () => {
       const response = await axios.post(`${API}/orders`, orderData);
       setOrderCreated(response.data);
       clearCart();
-      toast.success(t('order.success'));
+      toast.success(language === 'de' ? 'Bestellung erstellt!' : 'Order Created!');
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error('Failed to create order');
@@ -67,45 +66,59 @@ const Cart = () => {
   // Order Success View
   if (orderCreated) {
     return (
-      <div className="min-h-screen pt-20 md:pt-24" data-testid="order-success">
-        <div className="max-w-2xl mx-auto px-4 md:px-8 py-16">
+      <div className="min-h-screen pt-20 md:pt-24 bg-[#141414]" data-testid="order-success">
+        <div className="max-w-xl mx-auto px-6 md:px-12 py-16">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <div className="w-20 h-20 mx-auto mb-8 flex items-center justify-center bg-[#CCFF00]">
-              <FileText size={40} className="text-black" />
+            <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-white rounded-full">
+              <FileText size={32} className="text-black" />
             </div>
 
-            <h1 className="font-heading text-4xl md:text-5xl mb-4" data-testid="order-success-title">
-              {t('order.success')}
+            <h1 className="font-heading text-3xl md:text-4xl text-white mb-4" data-testid="order-success-title">
+              {language === 'de' ? 'BESTELLUNG ERSTELLT!' : 'ORDER CREATED!'}
             </h1>
 
-            <p className="font-mono text-lg text-[#CCFF00] mb-8" data-testid="order-number">
-              {t('order.orderNumber')}: {orderCreated.order_number}
+            <p className="text-white/60 mb-2" data-testid="order-number">
+              {language === 'de' ? 'Bestellnummer' : 'Order Number'}: <span className="text-white">{orderCreated.order_number}</span>
             </p>
 
             <Button
               onClick={handleDownloadPdf}
-              className="btn-primary mb-8 inline-flex items-center gap-2"
+              className="btn-primary mt-6 inline-flex items-center gap-2"
               data-testid="download-pdf-btn"
             >
               <Download size={18} />
-              {t('order.downloadPdf')}
+              {language === 'de' ? 'PDF HERUNTERLADEN' : 'DOWNLOAD PDF'}
             </Button>
 
-            <div className="bg-[#0a0a0a] border border-white/10 p-8 mb-8">
-              <p className="text-white/70 mb-6">{t('order.instruction')}</p>
-              <ContactButtons />
+            <div className="bg-[#1a1a1a] border border-white/10 p-6 mt-8 rounded">
+              <p className="text-white/60 mb-4 text-sm">
+                {language === 'de' 
+                  ? 'Bitte senden Sie dieses PDF, um Ihre Bestellung abzuschließen:' 
+                  : 'Please send this PDF to complete your order:'}
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a href="https://wa.me/41765288403" target="_blank" rel="noopener noreferrer" className="contact-btn">
+                  <MessageCircle size={16} /> WhatsApp
+                </a>
+                <a href="https://t.me/Hoohlya" target="_blank" rel="noopener noreferrer" className="contact-btn">
+                  <Send size={16} /> Telegram
+                </a>
+                <a href="https://www.instagram.com/hoohlyashop" target="_blank" rel="noopener noreferrer" className="contact-btn">
+                  <Instagram size={16} /> Instagram
+                </a>
+              </div>
             </div>
 
             <button
               onClick={handleNewOrder}
-              className="text-sm font-mono uppercase tracking-widest text-white/50 hover:text-[#CCFF00] transition-colors duration-300"
+              className="mt-8 text-sm uppercase tracking-wider text-white/50 hover:text-white transition-colors duration-300"
               data-testid="new-order-btn"
             >
-              {t('order.newOrder')}
+              {language === 'de' ? 'Neue Bestellung starten' : 'Start New Order'}
             </button>
           </motion.div>
         </div>
@@ -116,15 +129,17 @@ const Cart = () => {
   // Empty Cart View
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen pt-20 md:pt-24" data-testid="empty-cart">
-        <div className="max-w-2xl mx-auto px-4 md:px-8 py-16 text-center">
-          <div className="w-20 h-20 mx-auto mb-8 flex items-center justify-center border border-white/20">
-            <ShoppingBag size={40} className="text-white/30" />
+      <div className="min-h-screen pt-20 md:pt-24 bg-[#141414]" data-testid="empty-cart">
+        <div className="max-w-xl mx-auto px-6 md:px-12 py-16 text-center">
+          <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center border border-white/20 rounded-full">
+            <ShoppingBag size={32} className="text-white/30" />
           </div>
-          <h1 className="font-heading text-4xl md:text-5xl mb-4">{t('cart.title')}</h1>
-          <p className="text-white/50 mb-8">{t('cart.empty')}</p>
+          <h1 className="font-heading text-3xl md:text-4xl text-white mb-4">
+            {language === 'de' ? 'IHR WARENKORB' : 'YOUR CART'}
+          </h1>
+          <p className="text-white/50 mb-8">{language === 'de' ? 'Ihr Warenkorb ist leer' : 'Your cart is empty'}</p>
           <Link to="/catalog" className="btn-primary inline-block" data-testid="continue-shopping-btn">
-            {t('cart.continueShopping')}
+            {language === 'de' ? 'WEITER EINKAUFEN' : 'CONTINUE SHOPPING'}
           </Link>
         </div>
       </div>
@@ -133,22 +148,22 @@ const Cart = () => {
 
   // Cart View
   return (
-    <div className="min-h-screen pt-20 md:pt-24" data-testid="cart-page">
+    <div className="min-h-screen pt-20 md:pt-24 bg-[#141414]" data-testid="cart-page">
       {/* Header */}
-      <div className="py-12 md:py-16 border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="py-12 md:py-16">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-5xl md:text-7xl"
+            className="font-heading text-4xl md:text-6xl text-white text-center"
           >
-            {t('cart.title')}
+            {language === 'de' ? 'IHR WARENKORB' : 'YOUR CART'}
           </motion.h1>
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-8 md:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4" data-testid="cart-items">
             {cart.map((item, index) => (
@@ -157,11 +172,11 @@ const Cart = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex gap-4 bg-[#0a0a0a] border border-white/5 p-4"
+                className="flex gap-4 bg-[#1a1a1a] border border-white/10 p-4"
                 data-testid={`cart-item-${item.product_id}`}
               >
                 {/* Image */}
-                <div className="w-24 h-24 flex-shrink-0 bg-[#1a1a1a]">
+                <div className="w-20 h-20 flex-shrink-0 bg-[#262626]">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.product_name} className="w-full h-full object-cover" />
                   ) : (
@@ -173,40 +188,40 @@ const Cart = () => {
 
                 {/* Details */}
                 <div className="flex-grow min-w-0">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#CCFF00] mb-1">
+                  <p className="text-white/50 text-xs uppercase tracking-wider mb-1">
                     {item.brand_name}
                   </p>
-                  <h3 className="font-heading text-lg truncate mb-1">{item.product_name}</h3>
+                  <h3 className="text-white text-sm font-medium truncate mb-1">{item.product_name}</h3>
                   {item.size && (
-                    <p className="text-xs text-white/50 font-mono">Size: {item.size}</p>
+                    <p className="text-xs text-white/50">{language === 'de' ? 'Größe' : 'Size'}: {item.size}</p>
                   )}
                 </div>
 
-                {/* Quantity */}
+                {/* Quantity & Remove */}
                 <div className="flex flex-col items-end justify-between">
                   <button
                     onClick={() => removeFromCart(item.product_id, item.size)}
                     className="text-white/30 hover:text-red-500 transition-colors duration-300"
                     data-testid={`remove-${item.product_id}`}
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </button>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQuantity(item.product_id, item.size, item.quantity - 1)}
-                      className="w-8 h-8 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300"
+                      className="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300"
                       data-testid={`decrease-${item.product_id}`}
                     >
-                      <Minus size={14} />
+                      <Minus size={12} />
                     </button>
-                    <span className="font-mono text-sm w-8 text-center">{item.quantity}</span>
+                    <span className="text-sm w-6 text-center text-white">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.product_id, item.size, item.quantity + 1)}
-                      className="w-8 h-8 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300"
+                      className="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300"
                       data-testid={`increase-${item.product_id}`}
                     >
-                      <Plus size={14} />
+                      <Plus size={12} />
                     </button>
                   </div>
                 </div>
@@ -215,46 +230,48 @@ const Cart = () => {
           </div>
 
           {/* Checkout Form */}
-          <div className="lg:sticky lg:top-28 lg:self-start" data-testid="checkout-form">
-            <div className="bg-[#0a0a0a] border border-white/10 p-6 md:p-8">
-              <h2 className="font-heading text-2xl mb-6">{t('cart.checkout')}</h2>
+          <div data-testid="checkout-form">
+            <div className="bg-[#1a1a1a] border border-white/10 p-6 sticky top-28">
+              <h2 className="font-heading text-xl text-white mb-6">
+                {language === 'de' ? 'BESTELLUNG ABSCHLIESSEN' : 'CHECKOUT'}
+              </h2>
 
               <div className="space-y-4">
                 <div>
-                  <label className="font-mono text-xs uppercase tracking-widest text-white/50 mb-2 block">
-                    {t('cart.name')} *
+                  <label className="text-xs uppercase tracking-wider text-white/50 mb-2 block">
+                    {language === 'de' ? 'Ihr Name' : 'Your Name'} *
                   </label>
                   <Input
                     type="text"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="bg-[#1a1a1a] border-transparent focus:border-[#CCFF00] h-12"
+                    className="bg-[#262626] border-white/10 focus:border-white/30 h-10 text-white placeholder:text-white/30"
                     data-testid="customer-name-input"
                   />
                 </div>
 
                 <div>
-                  <label className="font-mono text-xs uppercase tracking-widest text-white/50 mb-2 block">
-                    {t('cart.contact')}
+                  <label className="text-xs uppercase tracking-wider text-white/50 mb-2 block">
+                    {language === 'de' ? 'Kontakt (optional)' : 'Contact (optional)'}
                   </label>
                   <Input
                     type="text"
                     value={customerContact}
                     onChange={(e) => setCustomerContact(e.target.value)}
-                    className="bg-[#1a1a1a] border-transparent focus:border-[#CCFF00] h-12"
+                    className="bg-[#262626] border-white/10 focus:border-white/30 h-10 text-white placeholder:text-white/30"
                     data-testid="customer-contact-input"
                   />
                 </div>
 
                 <div>
-                  <label className="font-mono text-xs uppercase tracking-widest text-white/50 mb-2 block">
-                    {t('cart.comment')}
+                  <label className="text-xs uppercase tracking-wider text-white/50 mb-2 block">
+                    {language === 'de' ? 'Kommentar (optional)' : 'Comment (optional)'}
                   </label>
                   <Textarea
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}
-                    className="bg-[#1a1a1a] border-transparent focus:border-[#CCFF00] resize-none"
+                    className="bg-[#262626] border-white/10 focus:border-white/30 resize-none text-white placeholder:text-white/30"
                     data-testid="comment-input"
                   />
                 </div>
@@ -262,18 +279,18 @@ const Cart = () => {
                 <Button
                   onClick={handleGenerateOrder}
                   disabled={loading}
-                  className="w-full h-14 btn-primary mt-4"
+                  className="w-full h-12 bg-white hover:bg-white/90 text-black font-medium text-sm uppercase tracking-wider rounded-none mt-4"
                   data-testid="generate-order-btn"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-black border-t-transparent animate-spin" />
+                      <div className="w-4 h-4 border-2 border-black border-t-transparent animate-spin rounded-full" />
                       Processing...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       <FileText size={18} />
-                      {t('cart.generateOrder')}
+                      {language === 'de' ? 'PDF GENERIEREN' : 'GENERATE PDF'}
                     </span>
                   )}
                 </Button>
