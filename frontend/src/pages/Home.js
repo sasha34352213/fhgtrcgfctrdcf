@@ -170,7 +170,7 @@ const Home = () => {
             {language === 'de' ? 'SO BESTELLEN SIE' : 'HOW TO ORDER'}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
             {steps.map((step, index) => (
               <React.Fragment key={index}>
                 <motion.div
@@ -178,7 +178,7 @@ const Home = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 }}
-                  className="step-card"
+                  className="step-card flex-1 max-w-[280px]"
                   data-testid={`step-${index + 1}`}
                 >
                   <div className="step-icon">
@@ -189,7 +189,7 @@ const Home = () => {
                   <p className="text-white/50 text-sm">{step.desc}</p>
                 </motion.div>
                 {index < steps.length - 1 && (
-                  <div className="hidden md:flex justify-center">
+                  <div className="hidden md:flex items-center px-4">
                     <ChevronRight size={24} className="text-white/30" />
                   </div>
                 )}
