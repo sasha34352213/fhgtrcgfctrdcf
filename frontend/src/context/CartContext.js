@@ -30,7 +30,9 @@ export const CartProvider = ({ children }) => {
         brand_name: brand?.name || 'Unknown',
         quantity: 1,
         size: size,
-        image_url: product.images?.[0] || null
+        image_url: product.images?.[0] || null,
+        price_text: product.price_text || 'CHF on request',
+        price_text_de: product.price_text_de || 'CHF auf Anfrage'
       }];
     });
   };
