@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const Cart = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
 
   const [customerName, setCustomerName] = useState('');
@@ -21,6 +21,17 @@ const Cart = () => {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(null);
+
+  // Calculate totals
+  const getItemPrice = (item) => {
+    // Extract numeric price from price_text if available, otherwise return 0
+    const priceMatch = item.price_text?.match(/[\d.]+/);
+    return priceMatch ? parseFloat(priceMatch[0]) : 0;
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0);
+  };
 
   const handleGenerateOrder = async () => {
     if (!customerName.trim()) {
@@ -73,7 +84,7 @@ const Cart = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-white rounded-full">
+            <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-[#c9a962] rounded-full">
               <FileText size={32} className="text-black" />
             </div>
 
@@ -82,12 +93,12 @@ const Cart = () => {
             </h1>
 
             <p className="text-white/60 mb-2" data-testid="order-number">
-              {language === 'de' ? 'Bestellnummer' : 'Order Number'}: <span className="text-white">{orderCreated.order_number}</span>
+              {language === 'de' ? 'Bestellnummer' : 'Order Number'}: <span className="text-[#c9a962]">{orderCreated.order_number}</span>
             </p>
 
             <Button
               onClick={handleDownloadPdf}
-              className="btn-primary mt-6 inline-flex items-center gap-2"
+              className="bg-[#c9a962] hover:bg-[#d4b872] text-black font-semibold mt-6 inline-flex items-center gap-2"
               data-testid="download-pdf-btn"
             >
               <Download size={18} />
@@ -146,6 +157,8 @@ const Cart = () => {
     );
   }
 
+  const total = calculateTotal();
+
   // Cart View
   return (
     <div className="min-h-screen pt-20 md:pt-24 bg-[#141414]" data-testid="cart-page">
@@ -172,15 +185,15 @@ const Cart = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex gap-4 bg-[#1a1a1a] border border-white/10 p-4"
+                className="flex gap-4 bg-[#1a1a1a] border border-white/10 p-4 rounded"
                 data-testid={`cart-item-${item.product_id}`}
               >
                 {/* Image */}
-                <div className="w-20 h-20 flex-shrink-0 bg-[#262626]">
+                <div className="w-24 h-24 flex-shrink-0 bg-[#f5f5f5] rounded overflow-hidden">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.product_name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                       No Image
                     </div>
                   )}
@@ -195,6 +208,10 @@ const Cart = () => {
                   {item.size && (
                     <p className="text-xs text-white/50">{language === 'de' ? 'Größe' : 'Size'}: {item.size}</p>
                   )}
+                  {/* Item Price */}
+                  <p className="text-[#c9a962] font-semibold mt-2">
+                    {item.price_text || 'CHF on request'}
+                  </p>
                 </div>
 
                 {/* Quantity & Remove */}
@@ -210,7 +227,7 @@ const Cart = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQuantity(item.product_id, item.size, item.quantity - 1)}
-                      className="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300"
+                      className="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300 rounded"
                       data-testid={`decrease-${item.product_id}`}
                     >
                       <Minus size={12} />
@@ -218,7 +235,7 @@ const Cart = () => {
                     <span className="text-sm w-6 text-center text-white">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.product_id, item.size, item.quantity + 1)}
-                      className="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300"
+                      className="w-7 h-7 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors duration-300 rounded"
                       data-testid={`increase-${item.product_id}`}
                     >
                       <Plus size={12} />
@@ -227,11 +244,25 @@ const Cart = () => {
                 </div>
               </motion.div>
             ))}
+
+            {/* Order Summary */}
+            <div className="bg-[#1a1a1a] border border-white/10 p-4 rounded mt-6">
+              <div className="flex justify-between items-center text-white/70 mb-2">
+                <span>{language === 'de' ? 'Artikel' : 'Items'}</span>
+                <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
+              </div>
+              <div className="flex justify-between items-center text-white font-semibold text-lg pt-2 border-t border-white/10">
+                <span>{language === 'de' ? 'GESAMT' : 'TOTAL'}</span>
+                <span className="text-[#c9a962]">
+                  {total > 0 ? `CHF ${total.toFixed(2)}` : (language === 'de' ? 'Auf Anfrage' : 'On request')}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Checkout Form */}
           <div data-testid="checkout-form">
-            <div className="bg-[#1a1a1a] border border-white/10 p-6 sticky top-28">
+            <div className="bg-[#1a1a1a] border border-white/10 p-6 sticky top-28 rounded">
               <h2 className="font-heading text-xl text-white mb-6">
                 {language === 'de' ? 'BESTELLUNG ABSCHLIESSEN' : 'CHECKOUT'}
               </h2>
@@ -245,7 +276,7 @@ const Cart = () => {
                     type="text"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="bg-[#262626] border-white/10 focus:border-white/30 h-10 text-white placeholder:text-white/30"
+                    className="bg-[#262626] border-white/10 focus:border-[#c9a962] h-10 text-white placeholder:text-white/30 rounded"
                     data-testid="customer-name-input"
                   />
                 </div>
@@ -258,7 +289,7 @@ const Cart = () => {
                     type="text"
                     value={customerContact}
                     onChange={(e) => setCustomerContact(e.target.value)}
-                    className="bg-[#262626] border-white/10 focus:border-white/30 h-10 text-white placeholder:text-white/30"
+                    className="bg-[#262626] border-white/10 focus:border-[#c9a962] h-10 text-white placeholder:text-white/30 rounded"
                     data-testid="customer-contact-input"
                   />
                 </div>
@@ -271,7 +302,7 @@ const Cart = () => {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}
-                    className="bg-[#262626] border-white/10 focus:border-white/30 resize-none text-white placeholder:text-white/30"
+                    className="bg-[#262626] border-white/10 focus:border-[#c9a962] resize-none text-white placeholder:text-white/30 rounded"
                     data-testid="comment-input"
                   />
                 </div>
@@ -279,7 +310,7 @@ const Cart = () => {
                 <Button
                   onClick={handleGenerateOrder}
                   disabled={loading}
-                  className="w-full h-12 bg-white hover:bg-white/90 text-black font-medium text-sm uppercase tracking-wider rounded-none mt-4"
+                  className="w-full h-12 bg-[#c9a962] hover:bg-[#d4b872] text-black font-semibold text-sm uppercase tracking-wider rounded mt-4"
                   data-testid="generate-order-btn"
                 >
                   {loading ? (

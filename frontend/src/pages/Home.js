@@ -9,7 +9,7 @@ import ProductCard from '../components/ProductCard';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const Home = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const [brands, setBrands] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -62,53 +62,40 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#141414]" data-testid="home-page">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center" data-testid="hero-section">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            {/* Left Content */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="order-2 lg:order-1"
-            >
-              <h1 className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white leading-[0.95] mb-4">
-                FASHION &<br />LUXURY BRANDS
-              </h1>
-              <p className="text-white/60 text-sm tracking-[0.3em] uppercase mb-8">
-                {language === 'de' ? 'DURCHSUCHEN. AUSWÄHLEN. BESTELLEN.' : 'BROWSE. SELECT. ORDER.'}
-              </p>
-              <Link
-                to="/catalog"
-                className="btn-primary inline-flex items-center gap-2"
-                data-testid="hero-cta"
-              >
-                {language === 'de' ? 'JETZT EINKAUFEN' : 'SHOP NOW'}
-              </Link>
-            </motion.div>
+      {/* Hero Section - Branded Image */}
+      <section className="relative min-h-[100vh] flex items-center justify-center" data-testid="hero-section">
+        {/* Hero Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://customer-assets.emergentagent.com/job_fashionpdf/artifacts/ojg0p4jr_photo_2026-01-11%2010.54.55.jpeg"
+            alt="HooHlya Shop - Premium Fashion"
+            className="w-full h-full object-cover"
+          />
+          {/* Subtle gradient overlay for better text readability if needed */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        </div>
 
-            {/* Right Image */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="order-1 lg:order-2"
+        {/* Optional: Minimal CTA at bottom */}
+        <div className="absolute bottom-12 left-0 right-0 text-center z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            <Link
+              to="/catalog"
+              className="inline-flex items-center gap-2 bg-[#c9a962] hover:bg-[#d4b872] text-black font-semibold uppercase tracking-wider text-sm px-8 py-4 transition-all duration-300"
+              data-testid="hero-cta"
             >
-              <div className="relative">
-                <img
-                  src="https://images.pexels.com/photos/8108586/pexels-photo-8108586.jpeg"
-                  alt="Fashion Model"
-                  className="w-full h-[400px] lg:h-[600px] object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                />
-              </div>
-            </motion.div>
-          </div>
+              {language === 'de' ? 'KATALOG ENTDECKEN' : 'EXPLORE CATALOG'}
+              <ChevronRight size={18} />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
       {/* Brand Logos */}
-      <section className="py-8 border-y border-white/10" data-testid="brand-logos">
+      <section className="py-8 border-y border-white/10 bg-[#0a0a0a]" data-testid="brand-logos">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12">
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {brands.slice(0, 5).map((brand) => (
@@ -118,7 +105,7 @@ const Home = () => {
                 className="brand-logo"
                 data-testid={`brand-logo-${brand.id}`}
               >
-                <span className="font-heading text-xl md:text-2xl text-white/70 hover:text-white transition-colors">
+                <span className="font-heading text-xl md:text-2xl text-[#c9a962]/70 hover:text-[#c9a962] transition-colors">
                   {brand.name.toUpperCase()}
                 </span>
               </Link>
@@ -231,7 +218,7 @@ const Home = () => {
                   <div className="text-center md:text-left">
                     <div className="flex justify-center md:justify-start gap-1 mb-3">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={14} className={i < review.rating ? 'fill-white text-white' : 'text-white/20'} />
+                        <Star key={i} size={14} className={i < review.rating ? 'fill-[#c9a962] text-[#c9a962]' : 'text-white/20'} />
                       ))}
                     </div>
                     <p className="text-white/80 italic mb-3">
