@@ -91,14 +91,14 @@ const ProductDetail = () => {
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Images */}
+          {/* Images - Original colors preserved */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="space-y-4"
           >
             {/* Main Image */}
-            <div className="aspect-square bg-[#1a1a1a] overflow-hidden" data-testid="main-image">
+            <div className="aspect-square bg-[#f5f5f5] overflow-hidden rounded" data-testid="main-image">
               {product.images?.[activeImage] ? (
                 <img
                   src={product.images[activeImage]}
@@ -106,7 +106,7 @@ const ProductDetail = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
+                <div className="w-full h-full flex items-center justify-center bg-[#1a1a1a]">
                   <span className="text-white/20">No Image</span>
                 </div>
               )}
@@ -150,8 +150,8 @@ const ProductDetail = () => {
             </h1>
 
             {/* Price */}
-            <p className="text-white/60" data-testid="product-price">
-              {priceText || (language === 'de' ? 'Preis auf Anfrage' : 'Price on request')}
+            <p className="text-[#c9a962] font-semibold text-xl" data-testid="product-price">
+              {priceText || 'CHF on request'}
             </p>
 
             {/* Description */}
